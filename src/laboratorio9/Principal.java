@@ -57,6 +57,7 @@ public class Principal extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Aplicacion de Pedidos");
 
         jPanel1.setBackground(new java.awt.Color(25, 32, 40));
 

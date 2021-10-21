@@ -90,6 +90,11 @@ public class Principal extends javax.swing.JFrame {
         jButton3.setText("Salir");
         jButton3.setBorder(null);
         jButton3.setFocusable(false);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(0, 153, 0));
         jButton4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -109,6 +114,11 @@ public class Principal extends javax.swing.JFrame {
         jButton5.setText("Consultar Pedido");
         jButton5.setBorder(null);
         jButton5.setFocusable(false);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setBackground(new java.awt.Color(0, 153, 255));
         jButton6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -128,6 +138,11 @@ public class Principal extends javax.swing.JFrame {
         jButton7.setText("Limpiar Tabla");
         jButton7.setBorder(null);
         jButton7.setFocusable(false);
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         jButton8.setBackground(new java.awt.Color(0, 153, 255));
         jButton8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -135,6 +150,11 @@ public class Principal extends javax.swing.JFrame {
         jButton8.setText("Consulta Producto");
         jButton8.setBorder(null);
         jButton8.setFocusable(false);
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         jButton9.setBackground(new java.awt.Color(0, 153, 255));
         jButton9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -274,14 +294,16 @@ public class Principal extends javax.swing.JFrame {
         }
     }
     
-    
+    public boolean openCon = false;
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        this.openCon = true;
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        this.openCon = false;
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -359,7 +381,7 @@ public class Principal extends javax.swing.JFrame {
             String[] arr = data.split(" ");
             
             if(arr[0].equals(codigo)){
-                JOptionPane.showMessageDialog(null, "Eliminado correctamente!");
+                continue;
             }else{
                 salida.format("%s %s %s %d %.2f %.2f%n", arr[0], arr[1], arr[2], Integer.parseInt(arr[3]), Double.valueOf(arr[4]), Double.valueOf(arr[5]));
             }
@@ -379,6 +401,80 @@ public class Principal extends javax.swing.JFrame {
         this.LoadData();
     }//GEN-LAST:event_jButton9ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        if(!this.openCon)
+            System.exit(0);
+        else
+            JOptionPane.showMessageDialog(null, "Debe cerrar el archivo antes de salir!");
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        String cod = JOptionPane.showInputDialog("Ingrese el codigo del pedido: ");
+        try{                                         
+            // TODO add your handling code here:
+            //reporte de pedidos
+            boolean encontrado = false;
+            this.LimpiarTable();
+            File mfile = new File("pedidos.txt");
+            Scanner lectura = new Scanner(mfile);
+            try{
+                while(lectura.hasNextLine()){
+                    String data = lectura.nextLine();
+                    String[] arr = data.split(" ");
+                    if(arr[0].equals(cod)){
+                        this.fillTable(arr[0], arr[1], arr[2], arr[3], arr[5]);
+                        encontrado = true;
+                    }
+                }
+            }catch(NoSuchElementException e){
+                System.err.println(e);
+            }
+            if(!encontrado)JOptionPane.showMessageDialog(null,"Pedido no encontrado, intente de nuevo :c");
+            lectura.close();
+            
+        }catch(FileNotFoundException ex){
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null,ex);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        String tipo = JOptionPane.showInputDialog("1- Queso \n 2- Pepperoni \n 3- Jamon \n Seleccione una opcion: ");
+        int pos = Integer.parseInt(tipo);
+        try{                                         
+            // TODO add your handling code here:
+            //reporte de pedidos
+            this.LimpiarTable();
+            File mfile = new File("pedidos.txt");
+            Scanner lectura = new Scanner(mfile);
+            try{
+                while(lectura.hasNextLine()){
+                    String data = lectura.nextLine();
+                    String[] arr = data.split(" ");
+                    if(arr[1].equals(this.pizzas[pos-1])){
+                        this.fillTable(arr[0], arr[1], arr[2], arr[3], arr[5]);
+                    }
+                }
+            }catch(NoSuchElementException e){
+                System.err.println(e);
+            }
+            lectura.close();
+            
+        }catch(FileNotFoundException ex){
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null,ex);
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
+        model.setRowCount(0);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    
+    
     /**
      * @param args the command line arguments
      */

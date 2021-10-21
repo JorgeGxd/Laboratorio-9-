@@ -5,6 +5,7 @@
  */
 package laboratorio9;
 import java.io.*;
+import java.util.Formatter;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -141,6 +142,11 @@ public class Principal extends javax.swing.JFrame {
         jButton9.setText("Eliminar Pedido");
         jButton9.setBorder(null);
         jButton9.setFocusable(false);
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         jTable1.setBackground(new java.awt.Color(49, 66, 82));
         jTable1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -340,6 +346,38 @@ public class Principal extends javax.swing.JFrame {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         this.LoadData();
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        String codigo  = JOptionPane.showInputDialog("Codigo de pedido a eliminar: ");
+        try {
+          Formatter salida = new Formatter("temp.txt");
+          File myObj = new File("pedidos.txt");
+          Scanner myReader = new Scanner(myObj);
+          while (myReader.hasNextLine()) {
+            String data = myReader.nextLine();
+            String[] arr = data.split(" ");
+            
+            if(arr[0].equals(codigo)){
+                JOptionPane.showMessageDialog(null, "Eliminado correctamente!");
+            }else{
+                salida.format("%s %s %s %d %.2f %.2f%n", arr[0], arr[1], arr[2], Integer.parseInt(arr[3]), Double.valueOf(arr[4]), Double.valueOf(arr[5]));
+            }
+          }
+          myReader.close();
+          salida.close();
+          File f1 = new File("temp.txt");
+          File f2 = new File("pedidos.txt");
+          f2.delete();
+          f1.renameTo(f2);
+          JOptionPane.showMessageDialog(null, "Eliminado Correctamente!");
+          
+        } catch (FileNotFoundException e) {
+          System.out.println("An error occurred.");
+          e.printStackTrace();
+        }
+        this.LoadData();
+    }//GEN-LAST:event_jButton9ActionPerformed
 
     /**
      * @param args the command line arguments

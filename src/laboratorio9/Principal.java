@@ -5,6 +5,8 @@
  */
 package laboratorio9;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author olste
@@ -14,7 +16,11 @@ public class Principal extends javax.swing.JFrame {
     /**
      * Creates new form Principal
      */
+    int cont;
+    FileHelper helper = new FileHelper();
+    public String[] pizzas =  {"Queso", "Pepperoni", "Jamon"};
     public Principal() {
+        this.cont = 1;
         initComponents();
     }
 
@@ -50,6 +56,11 @@ public class Principal extends javax.swing.JFrame {
         jButton1.setText("Abrir Archivo");
         jButton1.setBorder(null);
         jButton1.setFocusable(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(0, 153, 255));
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -57,6 +68,11 @@ public class Principal extends javax.swing.JFrame {
         jButton2.setText("Cerrar Archivo");
         jButton2.setBorder(null);
         jButton2.setFocusable(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setBackground(new java.awt.Color(255, 0, 51));
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -71,6 +87,11 @@ public class Principal extends javax.swing.JFrame {
         jButton4.setText("Ingresar Pedido");
         jButton4.setBorder(null);
         jButton4.setFocusable(false);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setBackground(new java.awt.Color(0, 153, 255));
         jButton5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -212,6 +233,34 @@ public class Principal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        helper.OpenFile();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        helper.CloseFile();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        Pedido nuevo_pedido = new Pedido();
+        int pizza = Integer.parseInt(JOptionPane.showInputDialog("Seleccione el Tipo de Pizza \n 1- Queso \n 2- Pepperoni \n 3- Jamon"));
+        int tam = Integer.parseInt(JOptionPane.showInputDialog("Seleccione el Tipo de Pizza \n 1- Grande --- Q100 \n 2- Mediana --- Q75 \n 3- Pequeño --- Q50"));
+        String tama = "";
+        double precio = 0;
+        if(tam == 1) tama = "Grande"; precio = 100;
+        if(tam == 2) tama = "Mediana"; precio = 75;
+        if(tam == 3) tama = "Pequeña"; precio = 50;
+        int cant = Integer.parseInt(JOptionPane.showInputDialog("Cantidad de pizass: "));
+        String tipo = this.pizzas[pizza-1];
+        String codigo = "000" + String.valueOf(this.cont);
+        this.cont++;
+        nuevo_pedido.setPedido(codigo, tipo, tama, cant, precio, precio*cant);      
+        this.helper.WriteFile(nuevo_pedido);
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments

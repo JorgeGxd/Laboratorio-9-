@@ -4,8 +4,13 @@
  * and open the template in the editor.
  */
 package laboratorio9;
-
+import java.io.*;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,7 +25,11 @@ public class Principal extends javax.swing.JFrame {
     FileHelper helper = new FileHelper();
     public String[] pizzas =  {"Queso", "Pepperoni", "Jamon"};
     public Principal() {
-        this.cont = 1;
+        try {
+            this.cont = Integer.parseInt(this.getNum());
+        } catch (IOException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
         initComponents();
     }
 
@@ -106,6 +115,11 @@ public class Principal extends javax.swing.JFrame {
         jButton6.setText("Reporte de Pedidos");
         jButton6.setBorder(null);
         jButton6.setFocusable(false);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jButton7.setBackground(new java.awt.Color(0, 153, 255));
         jButton7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -130,6 +144,7 @@ public class Principal extends javax.swing.JFrame {
 
         jTable1.setBackground(new java.awt.Color(49, 66, 82));
         jTable1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTable1.setForeground(new java.awt.Color(255, 255, 255));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -158,7 +173,7 @@ public class Principal extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -190,7 +205,7 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -234,14 +249,33 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    public String getNum() throws FileNotFoundException, IOException{
+        File f = new File("pedidos.txt");
+        if(f.exists()){
+            String lastLine = "";
+            String sCurrentLine = "";
+            BufferedReader br = new BufferedReader(new FileReader("pedidos.txt"));
+            while ((sCurrentLine = br.readLine()) != null) 
+            {
+                System.out.println(sCurrentLine);
+                lastLine = sCurrentLine;
+            }
+            String[] arr = lastLine.split(" ");
+            return arr[0];
+        }else{
+            return "00";
+        }
+    }
+    
+    
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        helper.OpenFile();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        helper.CloseFile();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -259,8 +293,53 @@ public class Principal extends javax.swing.JFrame {
         String codigo = "000" + String.valueOf(this.cont);
         this.cont++;
         nuevo_pedido.setPedido(codigo, tipo, tama, cant, precio, precio*cant);      
-        this.helper.WriteFile(nuevo_pedido);
+        try {
+            this.helper.WriteFile(nuevo_pedido);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.LoadData();
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    public void fillTable(String c, String t, String tam, String cant, String tot){
+        DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
+        Object[] row = {c, t, tam, cant, tot};              
+        model.addRow(row);
+    }
+    
+    public void LimpiarTable(){
+        DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
+        model.setRowCount(0);
+    }
+    
+    public void LoadData(){
+        try{                                         
+            // TODO add your handling code here:
+            //reporte de pedidos
+            this.LimpiarTable();
+            File mfile = new File("pedidos.txt");
+            Scanner lectura = new Scanner(mfile);
+            try{
+                while(lectura.hasNextLine()){
+                    String data = lectura.nextLine();
+                    String[] arr = data.split(" ");
+                    this.fillTable(arr[0], arr[1], arr[2], arr[3], arr[5]);
+                }
+            }catch(NoSuchElementException e){
+                System.err.println(e);
+            }
+            lectura.close();
+            
+        }catch(FileNotFoundException ex){
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null,ex);
+        }
+    }
+    
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        this.LoadData();
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments

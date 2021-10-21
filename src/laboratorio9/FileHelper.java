@@ -15,29 +15,27 @@ public class FileHelper {
     
     public FileHelper(){ }
     File myfile;
-    Scanner myScan;
     Formatter output;
     
-    public void OpenFile() {
-        try {
-            this.output = new Formatter("pedidos.txt");
-            JOptionPane.showMessageDialog(null, "Arcihvo Abierto");
-        } catch (FileNotFoundException ex) {
-            System.err.println(ex);
+    public void AbrirArchivo() throws FileNotFoundException, IOException{
+        try{
+            this.output = new Formatter(new FileWriter("pedidos.txt", true));
+        }catch(SecurityException securityException){
+            System.err.println("Error al abrir el archivo!");
         }
-        
     }
 
-    public void WriteFile(Pedido nuevo){
-        this.OpenFile();
-        this.output.format("%s %s %s %d %.2f %.2f%n", nuevo.codigo, nuevo.tipo, nuevo.tamanio, nuevo.cantidad,nuevo.precio, nuevo.total);
+    public void WriteFile(Pedido nuevo) throws FileNotFoundException, IOException{
+        this.output = new Formatter(new FileWriter("pedidos.txt", true));
+        this.output.format("%s %s %s %d %.2f %.2f \n", nuevo.codigo, nuevo.tipo, nuevo.tamanio, nuevo.cantidad,nuevo.precio, nuevo.total);
         this.CloseFile();
+       
     }
     
     
     
     public void CloseFile(){
-        this.output.close();
+        if(this.output != null) this.output.close();
     }
     
 }
